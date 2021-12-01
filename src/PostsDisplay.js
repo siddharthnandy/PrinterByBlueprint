@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from './Post';
 
-/*
 // airtable configuration
 const Airtable = require('airtable');
 
@@ -12,15 +11,27 @@ const airtableConfig = {
 
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
-*/
 
 const PostsDisplay = function () {
+  const [posts, setPosts] = useState([]);
+
+  const getPosts = () => {
+    base('Posts').select({ view: 'Grid view' }).all()
+      .then((records) => {
+        setPosts(records);
+      });
+  };
+
+  useEffect(getPosts, []);
+
   return (
-    <>
-      <Post author="Farmer Bob" body="Farmers only" />
-      <Post author="Blue" body="Print" />
-      <Post author="Printer" body="Not twitter I swear" />
-    </>
+    posts.map((post) => (
+      <Post
+        key={post.id}
+        author={post.fields.Author}
+        body={post.fields.Body}
+      />
+    ))
   );
 };
 
