@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import Post from './Post';
 
 // airtable configuration
@@ -12,7 +13,7 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-const PostsDisplay = function () {
+const PostsDisplay = function ({ newPostPublished, setNewPostPublished }) {
   const [posts, setPosts] = useState([]);
 
   const getPosts = () => {
@@ -23,6 +24,11 @@ const PostsDisplay = function () {
   };
 
   useEffect(getPosts, []);
+
+  if (newPostPublished) {
+    getPosts();
+    setNewPostPublished(false);
+  }
 
   return (
     posts.map((post) => (
@@ -36,3 +42,8 @@ const PostsDisplay = function () {
 };
 
 export default PostsDisplay;
+
+PostsDisplay.propTypes = {
+  newPostPublished: PropTypes.bool.isRequired,
+  setNewPostPublished: PropTypes.func.isRequired,
+};
